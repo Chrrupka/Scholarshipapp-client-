@@ -1,8 +1,14 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './ApplicationDetails.module.css';
-import TopMenu from "../TopMenu/TopMenu"; // CSS module import
+import TopMenu from "../TopMenu/TopMenu";
+import {useParams} from "react-router-dom";
+import axios from "../../../services/axiosConfig";
+import {useAuth} from "../../../hooks/useAuth"; // CSS module import
 
 const ApplicationDetails = () => {
+    const { id } = useParams();
+    useAuth();
+
     // Hardcoded data as placeholders for the backend data
     const applicationData = {
         number: '0032300023', // Placeholder, will be dynamic
@@ -24,9 +30,39 @@ const ApplicationDetails = () => {
             {id: 2, name: 'Załącznik 2', link: '#'}, // Placeholder, will be dynamic
         ],
     };
+
+    const [scholarshipApplication, setScholarshipApplication]=useState([]);
+    const [scholarshipDetails, setScholarshipDetails]=useState([])
+    const [scholarshipAttachment, setScholarshipAttachment]=useState([])
+    const [scholarshipStudent, setScholarshipStudent]=useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const authToken = sessionStorage.getItem('authToken');
+                const response = await axios.get(`http://localhost:3000/api/application/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`
+                    }
+                });
+                // Przypisanie odpowiedzi do stanów
+                setScholarshipApplication(response.data.app);
+                setScholarshipDetails(response.data.det[0]); // Założenie, że `det` to tablica zawierająca tylko jeden obiekt
+                setScholarshipAttachment(response.data.att);
+                setScholarshipStudent(response.data.stu[0])// `att` jest już tablicą
+            } catch (error) {
+                console.error("There was an error fetching the application details:", error);
+            }
+        };
+        fetchData();
+    }, [id]);
+
+
     const handlePrint = () => {
         window.print();
-    };
+    };  /* if (!scholarshipApplication) {
+        return <div>Loading...</div>; // Ekran ładowania, gdy dane są jeszcze pobierane
+    }*/
     return (
         <div className="application-container">
             <TopMenu/>
@@ -36,73 +72,72 @@ const ApplicationDetails = () => {
                         <button onClick={handlePrint} className={styles.button}>Drukuj</button>
                     </div>
                     <h1 className={styles.title}>
-                        Wniosek o stypendium socjalne numer <span className={styles.dynamic}>0032300023</span>
+                        Wniosek o stypendium socjalne numer <span className={styles.dynamic}>{scholarshipApplication.id}</span>
                     </h1>
                     <div className={styles.dateStatusContainer}>
                         <p className={styles.date}>
-                            Data: <span className={styles.dynamic}>02.02.2021</span>
+                            Data: <span className={styles.dynamic}>{new Date(scholarshipApplication.createdAt).toLocaleDateString()}</span>
                         </p>
                         <p className={styles.status}>
-                            Status: <span className={styles.dynamic}>{applicationData.status}</span>
+                            Status: <span className={styles.dynamic}>{scholarshipApplication.status}</span>
                         </p>
                     </div>
                 </div>
                 <div className={styles.details}>
                     <div className={styles.detailItem}>
                         <span className={styles.label}>Imię:</span>
-                        <span className={styles.dynamic}>Anna</span>
+                        <span className={styles.dynamic}>{scholarshipStudent.name}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Nazwisko:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.surname}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Pesel:</span>
-                    <span className={styles.dynamic}>95091502222</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.pesel}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Numer albumu:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.album_id}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Adres email:</span>
-                    <span className={styles.dynamic}>kowal@example.com</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.email}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Numer telefonu:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.phone_number}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Adres:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipStudent.address}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Specjalizacja:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipDetails.specialization}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Poziom kształcenia:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipDetails.education_level}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>Rok studiów:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipDetails.current_study_year}</span>
                 </div>
                 <div className={styles.detailItem}>
                     <span className={styles.label}>System studiów:</span>
-                    <span className={styles.dynamic}>Kowal</span>
+                    <span className={styles.dynamic}>{scholarshipDetails.study_system}</span>
                 </div>
                 <div className={styles.attachments}>
                     <div className={styles.attachmentItem}>
                         <span className={styles.label}>Załączniki:</span>
                         {/* This will be a list when you have dynamic data */}
                         <ul className={styles.attachmentList}>
-                            <li>
-                                <a href="#" className={styles.dynamic}>Załącznik 1</a>
-                            </li>
-                            <li>
-                                <a href="#" className={styles.dynamic}>Załącznik 2</a>
-                            </li>
+{/*                              {att.map((attachment, index) => (
+                                <li key={index}>
+                                    <a href="#" className={styles.dynamic}>{attachment.file_name}</a>
+                                </li>
+                            ))}*/}
                         </ul>
                     </div>
                 </div>
