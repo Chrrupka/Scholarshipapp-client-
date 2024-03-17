@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import styles from './SignIn.module.css';
 import logo from "../../assets/logo.png";
+import axios from "axios";
 
 
 const SignIn = () => {
+    const [error, setError] = useState("");
     const [loginData, setLoginData] = useState({
-        username: '',
+        login: '',
         password: ''
     });
 
@@ -15,27 +17,53 @@ const SignIn = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // logikę logowania
         console.log(loginData);
+        axios.post('http://localhost:3000/api/user/auth', loginData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+            .then(response => {
+                if(response.data.token) {
+                    console.log("Login success", response.data);
+                    sessionStorage.setItem('authToken', response.data.token); // Zapisz token w sessionStorage
+                    window.location.href = '/news'; // Zmieniono na przekierowanie do /news
+                } else {
+                    console.error("Login failed: No token received");
+                    setError("Błąd logowania: nie otrzymano tokena.");
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error("Login failed", error.response.status, error.response.data);
+                    setError(`Logowanie nieudane. Status: ${error.response.status}. Sprawdź swoją nazwę użytkownika i hasło.`);
+                } else if (error.request) {
+                    console.error("No response received", error.request);
+                    setError("Logowanie nieudane. Serwer nie odpowiada.");
+                } else {
+                    console.error("Error", error.message);
+                    setError("Logowanie nieudane. Nieoczekiwany błąd.");
+                }
+            });
     };
+
 
     return (
         <div className="application-container">
-
             <nav className={styles.topMenu}>
                 <img src={logo} className={styles.logo} alt="Akademia Tarnowska Logo"/>
             </nav>
             <div className={styles.applicationFormContainer}>
-
                 <h2>Logowanie</h2>
                 <form onSubmit={handleSubmit} className={styles.loginForm}>
                     <div className={styles.formRow}>
-                        <label htmlFor="username">Nazwa użytkownika</label>
+                        <label htmlFor="login">Nazwa użytkownika</label>
                         <input
-                            id="username"
-                            name="username"
+                            id="login"
+                            name="login"
                             type="text"
-                            value={loginData.username}
+                            value={loginData.login}
                             onChange={handleChange}
                             placeholder="Nazwa użytkownika"
                             className={styles.input}
@@ -55,11 +83,13 @@ const SignIn = () => {
                     </div>
                     <div className={styles.formActions}>
                         <button type="submit" className={styles.button}>Zaloguj się</button>
+
                     </div>
+                    {error && <div className={styles.error}>{error}</div>}
                 </form>
             </div>
         </div>
-    )
-        ;
+    );
 };
+
 export default SignIn;

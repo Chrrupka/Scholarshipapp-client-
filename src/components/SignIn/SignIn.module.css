@@ -70,3 +70,7 @@
     max-height: 50px; /* Limits the logo height */
     margin-right: 20px; /* Adds some space between logo and links */
 }
+.error {
+    color: red; /* Przykład */
+    margin-top: 10px;
+}
