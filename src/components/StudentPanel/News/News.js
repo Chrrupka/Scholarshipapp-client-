@@ -2,9 +2,13 @@
 import React from 'react';
 import styles from './News.module.css';
 import TopMenu from "../TopMenu/TopMenu";
+import {useAuth} from "../../../hooks/useAuth";
+
 
 const News = () => {
+    useAuth();
     return (
+
         <div className="application-container">
 
             <TopMenu/>

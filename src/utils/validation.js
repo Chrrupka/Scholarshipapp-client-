@@ -23,6 +23,9 @@ export const personalInformationSchema = Yup.object().shape({
       .required('Numer telefonu jest wymagany.'),
   address: Yup.string()
       .required('Adres zamieszkania jest wymagany.'),
+  type: Yup.string()
+      .required('Musisz wybrać typ stypendium'),
+
 });
 export const educationalInformationSchema = Yup.object().shape({
   specialization: Yup.string()

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './SignIn.module.css';
 import logo from "../../assets/logo.png";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 const SignIn = () => {
@@ -10,6 +11,7 @@ const SignIn = () => {
         login: '',
         password: ''
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setLoginData({...loginData, [e.target.name]: e.target.value});
@@ -27,9 +29,14 @@ const SignIn = () => {
             .then(response => {
                 if(response.data.token) {
                     console.log("Login success", response.data);
-                    sessionStorage.setItem('authToken', response.data.token); // Zapisz token w sessionStorage
-                    window.location.href = '/news'; // Zmieniono na przekierowanie do /news
-                } else {
+                    sessionStorage.setItem('authToken', response.data.token);
+                    //sessionStorage.removeItem()
+// Zapisz token w sessionStorage
+                    if(loginData.login === 'admin@gmail.com') {
+                        navigate('/admin_applications'); // Dla admina
+                    } else {
+                        navigate('/news'); // Dla zwykłego użytkownika
+                    }                } else {
                     console.error("Login failed: No token received");
                     setError("Błąd logowania: nie otrzymano tokena.");
                 }

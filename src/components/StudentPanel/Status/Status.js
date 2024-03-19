@@ -6,10 +6,6 @@ import axios from "axios";
 import {useAuth} from "../../../hooks/useAuth";
 import {useNavigate} from "react-router-dom";
 
-/*const scholarshipData = [
-    { date: '2023-01-01', type: 'socjalne', status: 'Odrzucone', id: 1 },
-    { date: '2023-02-15', type: 'rektorskie', status: 'Zaakceptowane', id: 2 },
-];*/
 
 const Status = () => {
     const [scholarshipData, setScholarshipData]=useState([]);
@@ -20,7 +16,8 @@ const Status = () => {
     useEffect(() => {
         axios.get('http://localhost:3000/api/applications') // Zastąp 'localhost:3000' rzeczywistym adresem Twojego serwera backendowego
             .then(response => {
-                setScholarshipData(response.data);
+                const filteredData = response.data.filter(item => item.status !== 'Odrzucony' && item.status !== 'Zaakceptowany');
+                setScholarshipData(filteredData);
             })
             .catch(error => {
                 console.error("There was an error fetching the scholarship data:", error);
@@ -39,8 +36,9 @@ const Status = () => {
                 <table className={styles.table}>
                     <thead>
                     <tr>
+                        <th className={styles.th}>Id stypendium</th>
                         <th className={styles.th}>Data</th>
-                        <th className={styles.th}>Rodzaj Stypendium</th>
+                        <th className={styles.th}>Rodzaj</th>
                         <th className={styles.th}>Status</th>
                         <th className={styles.th}>Akcje</th>
                     </tr>
@@ -48,6 +46,7 @@ const Status = () => {
                     <tbody>
                     {scholarshipData.map((item) => (
                         <tr key={item.id}>
+                            <td className={styles.td}>{item.id}</td>
                             <td className={styles.td}>{new Date(item.createdAt).toLocaleDateString()}</td>                             <td className={styles.td}>{item.type}</td>
                             <td className={styles.td}>{item.status}</td>
                             <td className={styles.td}>

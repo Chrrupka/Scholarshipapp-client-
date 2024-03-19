@@ -13,23 +13,22 @@ import AdminArchive from "./components/AdminPanel/AdminArchive/AdminArchive";
 import AdminApplicationDetails from "./components/AdminPanel/CurrentApplications/ApplicationDetails/AdminApplicationDetails";
 
 
-
 function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<News/>} />
+                <Route path="/" element={<SignIn/>} />
                 <Route path="/criteria" element={<Criteria/>} />
                 <Route path="/news" element={<News/>} />
                 <Route path="/form" element={<ScholarshipForm/>} />
                 <Route path="/status" element={<Status/>} />
                 <Route path="/archive" element={<Archive/>} />
                 <Route path="/applications" element={<CurrentApplications/>} />
-                <Route path="/details" element={<ApplicationDetails />} />
+                <Route path="/details/:id" element={<ApplicationDetails />} />
                 <Route path="/sign_in" element={<SignIn/>} />
                 <Route path="/admin_archive" element={<AdminArchive/>}/>
                 <Route path="/admin_applications" element={<CurrentApplications/>}/>
-                <Route path="/admin_details" element={<AdminApplicationDetails/>}/>
+                <Route path="/admin_details/:id" element={<AdminApplicationDetails/>}/>
 
             </Routes>
         </Router>

@@ -13,6 +13,8 @@ const TopMenu = () => {
             <Link className={styles.link} to="/form">Złóż Wniosek</Link>
             <Link className={styles.link} to="/status">Statusy</Link>
             <Link className={styles.link} to="/archive">Archiwum</Link>
+            <Link className={styles.link} to="/">Wyloguj</Link>
+
         </nav>
     );
 };

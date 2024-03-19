@@ -2,7 +2,28 @@ import React from 'react';
 import styles from './ScholarshipForm.module.css';
 import {specializations,  educationLevels, studyYears, studySystems} from "../../../data/formData";
 
-const EducationalInformation = ({ formik, handlePrevious }) => {
+const EducationalInformation = ({ formik, handlePrevious, attachment, handleFileUpload, handleRemoveAttachment, setAttachment  }) => {
+    const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        try {
+            const base64 = await convertFileToBase64(file);
+            setAttachment(base64); // Zakładając, że masz stan `attachment` do przechowywania zakodowanego pliku
+        } catch (error) {
+            console.error("Błąd przy konwersji pliku:", error);
+        }
+    };
+
     return (
         <div>
             {formik.touched.specialization && formik.errors.specialization && (
@@ -66,7 +87,7 @@ const EducationalInformation = ({ formik, handlePrevious }) => {
                 </select>
 
             </div>
-            {formik.touched.studySystem && formik.errors.studySystem&& (
+            {formik.touched.studySystem && formik.errors.studySystem && (
                 <div className={styles.errorMessage}>{formik.errors.studySystem}</div>
             )}
             <div className={styles.formRow}>
@@ -84,10 +105,29 @@ const EducationalInformation = ({ formik, handlePrevious }) => {
                         <option key={index} value={system}>{system}</option>
                     ))}
                 </select>
-
+            </div>
+            <div className={styles.formRow}>
+                <label htmlFor="file" className={styles.label}>Załącznik:</label>
+                <div className={styles.fileInputContainer}>
+                    <input
+                        id="file"
+                        name="file"
+                        type="file"
+                        onChange={handleFileChange}
+                        accept=".pdf"
+                        className={styles.input}
+                    />
+                </div>
+                {attachment && (
+                    <div className={styles.attachmentItem}>
+                        <span className={styles.attachmentName}>{attachment.file.name}</span>
+                        <button type="button" onClick={handleRemoveAttachment} className={styles.removeAttachmentButton}>Usuń</button>
+                    </div>
+                )}
             </div>
             <div style={{marginTop: '20px'}}>
-                <button onClick={handlePrevious} type="button"  className={styles.buttonSubmit} style={{marginRight: '10px'}}>Powrót
+                <button onClick={handlePrevious} type="button" className={styles.buttonSubmit}
+                        style={{marginRight: '10px'}}>Powrót
                 </button>
                 <button type="submit" className={styles.buttonSubmit}>Wyślij</button>
             </div>

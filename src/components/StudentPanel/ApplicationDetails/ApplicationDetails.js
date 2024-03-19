@@ -1,36 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import styles from './ApplicationDetails.module.css';
 import TopMenu from "../TopMenu/TopMenu";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "../../../services/axiosConfig";
 import {useAuth} from "../../../hooks/useAuth"; // CSS module import
 
 const ApplicationDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate(); // Używamy useNavigate tutaj
+
     useAuth();
-
-    // Hardcoded data as placeholders for the backend data
-    const applicationData = {
-        number: '0032300023', // Placeholder, will be dynamic
-        status: 'Pending', // Placeholder for status, will be dynamic
-        date: '02.02.2021', // Placeholder, will be dynamic
-        name: 'Anna', // Placeholder, will be dynamic
-        surname: 'Kowal', // Placeholder, will be dynamic
-        pesel: '95091502222', // Placeholder, will be dynamic
-        albumNumber: 'Kowal', // Placeholder, will be dynamic
-        email: 'kowal@example.com', // Placeholder, will be dynamic
-        phone: 'Kowal', // Placeholder, will be dynamic
-        address: 'Kowal', // Placeholder, will be dynamic
-        specialization: 'Kowal', // Placeholder, will be dynamic
-        levelOfEducation: 'Kowal', // Placeholder, will be dynamic
-        yearOfStudy: 'Kowal', // Placeholder, will be dynamic
-        systemOfStudy: 'Kowal', // Placeholder, will be dynamic
-        attachments: [
-            {id: 1, name: 'Załącznik 1', link: '#'}, // Placeholder, will be dynamic
-            {id: 2, name: 'Załącznik 2', link: '#'}, // Placeholder, will be dynamic
-        ],
-    };
-
     const [scholarshipApplication, setScholarshipApplication]=useState([]);
     const [scholarshipDetails, setScholarshipDetails]=useState([])
     const [scholarshipAttachment, setScholarshipAttachment]=useState([])
@@ -57,22 +36,26 @@ const ApplicationDetails = () => {
         fetchData();
     }, [id]);
 
+    const handleBack = () => {
+        navigate(`/news`); // Użyj ścieżki zgodnej z konfiguracją Twojego routingu
+    };
 
     const handlePrint = () => {
         window.print();
-    };  /* if (!scholarshipApplication) {
+    };
+    if (!scholarshipApplication) {
         return <div>Loading...</div>; // Ekran ładowania, gdy dane są jeszcze pobierane
-    }*/
+    }
     return (
         <div className="application-container">
             <TopMenu/>
             <div className={styles.detailsContainer}>
                 <div className={styles.header}>
                     <div className={styles.actions}>
-                        <button onClick={handlePrint} className={styles.button}>Drukuj</button>
+                        <button onClick={handleBack} className={styles.button}>Powrót</button>
                     </div>
                     <h1 className={styles.title}>
-                        Wniosek o stypendium socjalne numer <span className={styles.dynamic}>{scholarshipApplication.id}</span>
+                        Wniosek o stypendium numer <span className={styles.dynamic}>{scholarshipApplication.id}</span>
                     </h1>
                     <div className={styles.dateStatusContainer}>
                         <p className={styles.date}>
@@ -142,10 +125,11 @@ const ApplicationDetails = () => {
                     </div>
                 </div>
             </div>
-            <div className={styles.actions}>
-                <button className={styles.button}>Powrót</button>
-                <button className={styles.button}>Złóż wniosek ponownie</button>
-            </div>
+                <div className={styles.actions}>
+                    <button onClick={handlePrint} className={styles.button}>Drukuj</button>
+
+                    <button className={styles.button}>Złóż wniosek ponownie</button>
+                </div>
             </div>
         </div>
     );

@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import styles from './Criteria.module.css';
 import { criteria, scholarshipTypes } from "../../../data/criteriaData"; // Ensure you have this data file with a similar structure
-import TopMenu from "../TopMenu/TopMenu"; // Ensure you have the AdminTopMenu component
+import TopMenu from "../TopMenu/TopMenu";
+import {useAuth} from "../../../hooks/useAuth"; // Ensure you have the AdminTopMenu component
 
 const CriteriaComponent = () => {
+    useAuth();
+
     // State to track the selected option
     const [selectedOption, setSelectedOption] = useState(null);
 

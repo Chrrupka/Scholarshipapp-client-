@@ -49,6 +49,63 @@
   outline: none;
 }
 
+.type {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.radioLabel {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+}
+
+.radioButton {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.attachmentItem {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.attachmentName {
+  flex-grow: 1;
+}
+
+.radioLabel:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.radioLabel input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.radioLabel input:checked ~ .checkmark:after {
+  display: block;
+}
+.attachmentRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+
 .buttonSubmit {
   background-color: #0056a6;
   color: #fff;
@@ -66,6 +123,24 @@
 .buttonSubmit:hover,
 .buttonSubmit:disabled {
   background-color: #004a94;
+}
+.fileInputContainer {
+  display: flex;
+  align-items: center;
+}
+
+.removeAttachmentButton {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.removeButton:hover {
+  background-color: #cc0000;
 }
 
 .successMessage {

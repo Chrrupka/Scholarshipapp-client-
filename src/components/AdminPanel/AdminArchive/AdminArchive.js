@@ -1,8 +1,9 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './AdminArchive.module.css';
 import AdminTopMenu from "../AdminTopMenu/AdminTopMenu";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import {useAuth} from "../../../hooks/useAuth";
 
 const applicationsData = [
     { id: 1, date: '2023-01-01', type: 'Typee A', status: 'BPeending', name: 'AJohen Doe', albumNumber: '0021' },
@@ -13,6 +14,7 @@ const applicationsData = [
 ];
 
 const AdminArchive = () => {
+    useAuth();
     const [applications, setApplications] = useState(applicationsData);
     const [sortConfig, setSortConfig] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');

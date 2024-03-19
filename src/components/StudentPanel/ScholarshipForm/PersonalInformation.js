@@ -1,9 +1,60 @@
 import React from 'react';
 import styles from './ScholarshipForm.module.css';
+import {useAuth} from "../../../hooks/useAuth";
 const PersonalInformation = ({ formik, handleNext }) => {
+    useAuth();
 
+    const handleSubmit = () => {
+            const personalData = {
+                name: formik.values.firstName,
+                surname: formik.values.lastName,
+                pesel: formik.values.pesel,
+                album_id: formik.values.albumNumber,
+                email: formik.values.email,
+                phone_number: formik.values.phoneNumber,
+                address: formik.values.address,
+                type:formik.values.type,
+            };
+            handleNext(personalData);
+        };
     return (
         <div className="personal-info-container">
+
+            <div className={styles.type} style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '20px' }}>
+                <label>
+                    <input
+                        type="radio"
+                        name="type"
+                        value="rectors"
+                        checked={formik.values.type === 'rectors'}
+                        onChange={formik.handleChange}
+                    />
+                    Rektorskie
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        name="type"
+                        value="social"
+                        checked={formik.values.type === 'social'}
+                        onChange={formik.handleChange}
+                    />
+                    Socjalne
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        name="type"
+                        value="forDisabled"
+                        checked={formik.values.type === 'forDisabled'}
+                        onChange={formik.handleChange}
+                    />
+                    Dla niepełnosprawnych
+                </label>
+            </div>
+            {formik.touched.type && formik.errors.type && (
+                <div className={styles.errorMessage}>{formik.errors.type}</div>
+            )}
             {formik.touched.firstName && formik.errors.firstName && (
                 <div className={styles.errorMessage}>{formik.errors.firstName}</div>
             )}
@@ -58,7 +109,7 @@ const PersonalInformation = ({ formik, handleNext }) => {
                 />
 
             </div>
-            {formik.touched.albumNumber && formik.errors.albumNumber&& (
+            {formik.touched.albumNumber && formik.errors.albumNumber && (
                 <div className={styles.errorMessage}>{formik.errors.albumNumber}</div>
             )}
             <div className={styles.formRow}>
@@ -132,10 +183,10 @@ const PersonalInformation = ({ formik, handleNext }) => {
 
             </div>
 
-            <button type="button" onClick={handleNext} className={styles.buttonSubmit} disabled={formik.isSubmitting}>
+            <button type="button" onClick={handleSubmit} className={styles.buttonSubmit} disabled={formik.isSubmitting}>
                 Dalej
             </button>
-              </div>
+        </div>
     );
 };
 
